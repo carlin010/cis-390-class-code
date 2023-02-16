@@ -2,12 +2,12 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
-#include <semaphore.h>
+#include <pthread.h> // required for threads/ mutex
+#include <semaphore.h> // required for semephore functions
 
 void *thread_function(void *arg);
 
-sem_t bin_sem;
+sem_t bin_sem; // define binary semaphore 
 
 #define WORK_SIZE 1024
 char work_area[WORK_SIZE];
@@ -32,7 +32,13 @@ int main()
     printf("Input some text. Enter 'end' to finish\n");
     while (strncmp("end", work_area, 3) != 0)
     {
-        fgets(work_area, WORK_SIZE, stdin);
+        if (strncmp(work_area, "FAST", 4) == 0) 
+        {
+            //sem_post(&bin_sem);
+            strcpy(work_area,"WHEEEE...");
+        } else {
+            fgets(work_area, WORK_SIZE, stdin);
+        }
         sem_post(&bin_sem);
     }
     printf("\nWaiting for thread to finish...\n");
